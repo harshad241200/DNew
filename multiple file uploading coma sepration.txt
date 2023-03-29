@@ -1,0 +1,160 @@
+multiple file uploading 
+
+<?php
+if (isset($_POST['submit'])) {
+    //print_r($_FILES['received_from_buyer_image']);
+    
+$images=implode(",",$_FILES['received_from_buyer_image']['tmp_name']);
+ //print_r($images);
+ //exit;
+
+
+foreach($_FILES['received_from_buyer_image']['tmp_name'] as $key=>$img){
+if(isset($img)){
+
+  $file_size = $_FILES['received_from_buyer_image']['size'][$key];
+
+  if($file_size > 5000000){          // 1kb == 1000
+
+    echo $fileError = "Sorry, file should be less than 5000kb";
+    
+
+  }else{
+    $uploads = 'images/';
+    $file_name = rand(1000,9999).'.jpg';
+    $target[] = $uploads.$file_name;
+    $t = $uploads.$file_name;
+    $move_uploaded_file = move_uploaded_file($img, $t);
+    echo "uploaded".$t;
+  }
+
+}
+else{
+    echo "no isset";
+}
+}
+//exit;
+
+
+//upload_amazon_image
+ $images1=implode(",",$_FILES['upload_amazon_image']['tmp_name']);
+//print_r($images);
+//exit;
+
+
+foreach($_FILES['upload_amazon_image']['tmp_name'] as $key1=>$img1){
+if(isset($img1)){
+
+  $file_size = $_FILES['upload_amazon_image']['size'][$key1];
+
+  if($file_size1 > 50000000){          // 1kb == 1000
+
+    echo $fileError1 = "Sorry, file should be less than 5000kb"; exit;
+    
+
+  }else{
+    $uploads1 = 'images/';
+    $file_name = rand(1000,9999).'.jpg';
+    $target1[] = $uploads1.$file_name;
+    $t1 = $uploads1.$file_name;
+    $move_uploaded_file = move_uploaded_file($img1, $t1);
+    echo "uploaded".$t1;
+  }
+
+}
+else{
+    echo "no isset";
+}
+}
+
+//exit;
+
+
+
+ $id= $_post['id'];
+ $images= implode(",",$target);
+ $images1= implode(",",$target1);
+
+$sql="UPDATE `data` SET  `id`='$id',`received_from_buyer_image`='$images',`upload_amazon_image`='$images1',   WHERE `id`='$id'";
+// echo $sql; exit;
+
+if (mysqli_query($conn, $sql)) {
+     echo "New record Updated successfully";
+     echo "<script type=\"text/javascript\">
+      alert(\"Data Updated Successfully\");
+      window.location = \"\"
+      </script>";
+  }
+   else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+      // header("http://path/index.php?id=1244554455");
+  }
+
+}
+
+?>
+
+
+<form action="" method="post" enctype="multipart/form-data">
+                                    <div class="card-body">
+                                        <div class="row form-group">
+                    <!--<hr size="8" width="100%" style="color: red; height:2px; margin-bottom:25px;">-->
+                     <?php
+
+                                            $query = mysqli_query($conn, "SELECT * FROM `data` where `id`='$id'") or die(mysqli_error($conn));
+
+                                            while ($data = mysqli_fetch_array($query)) {
+
+                                                // echo "<pre>"; print_r($data); echo "</pre>";
+
+                                            ?>
+
+
+
+ <div class="row form-group">
+                                    <div class="col-sm-1">
+                            <label title="Received from Buyer Image" class="main-label">Received from buyer image</label>
+                            </div>
+                            <div class="col-sm-2">
+                       
+                        <input type="file" name="received_from_buyer_image[]" value="<?php echo $data['received_from_buyer_image']; ?>" multiple="multiple" id="" class="form-control">    
+
+                </div>
+
+
+                    <div class="col-sm-1">
+                           <label title="Upload to Amazon Image" class="main-label">Upload to Amazon Image</label>
+                            </div>
+                            <div class="col-sm-2">
+                        <input type="file" name="upload_amazon_image[]" value="<?php echo $data['upload_amazon_image']; ?>" multiple="multiple" id=""class="form-control">
+                    </div>
+                        
+ </div>
+
+                        <div class="row form-group">
+
+                        <?php
+                        $img=explode(",",$data['received_from_buyer_image']);
+                        foreach($img as $key=>$val){ //echo $val; ?>
+                        <img src="<?php echo "http://path/".$val; ?>" style="width:50px;height:50px;" />
+                        <?php }
+                        ?>
+                        
+                        <?php
+                        $img1=explode(",",$data['upload_amazon_image']);
+                        foreach($img1 as $key=>$val1){ //echo $val; ?>
+                        <img src="<?php echo "http://path/".$val1; ?>" style="width:50px;height:50px;" />
+                        <?php }
+                        ?>
+   
+                        </div>
+
+
+
+
+
+<?php }
+
+?>
+
+    
